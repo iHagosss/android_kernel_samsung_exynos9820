@@ -10,3 +10,6 @@ config SRCARCH
 	option env="SRCARCH"
 
 source "arch/$SRCARCH/Kconfig"
+
+# Include KernelSU Kconfig so CONFIG_KSU can be selected
+source "kernel/Kconfig"
