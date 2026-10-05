@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: GPL-2.0
+#
+# KernelSU-Next integration hook for the Samsung Exynos9820 tree.
+#
+
+menu "KernelSU-Next"
+
+source "kernel/kernelsu-next/Kconfig"
+
+endmenu
