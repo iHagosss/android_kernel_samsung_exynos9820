@@ -44,6 +44,24 @@ done
 echo "Preparing the build environment..."
 
 pushd $(dirname "$0") > /dev/null
+
+# Ensure KernelSU-Next upstream sources are present under kernel/kernelsu-next.
+# This will use the git submodule when available, or fall back to cloning the upstream repo.
+if [ ! -d "kernel/kernelsu-next" ] || [ ! -f "kernel/kernelsu-next/README.md" ]; then
+    echo "Fetching KernelSU-Next upstream into kernel/kernelsu-next..."
+    # Try git submodule first if this repository has it configured
+    git submodule update --init --recursive kernel/kernelsu-next 2>/dev/null || true
+
+    if [ ! -d "kernel/kernelsu-next" ] || [ ! -f "kernel/kernelsu-next/README.md" ]; then
+        echo "kernel/kernelsu-next not present via submodule; cloning directly from upstream (dev branch)..."
+        rm -rf kernel/kernelsu-next
+        git clone --depth 1 --branch dev https://github.com/KernelSU-Next/KernelSU-Next.git kernel/kernelsu-next || {
+            echo "Failed to fetch KernelSU-Next upstream. Please ensure network access or run 'git submodule update --init --recursive'."
+            exit 1
+        }
+    fi
+fi
+
 CORES=`cat /proc/cpuinfo | grep -c processor`
 
 # Define toolchain variables
