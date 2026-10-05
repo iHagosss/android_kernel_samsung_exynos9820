@@ -1,31 +1,37 @@
-## Build instructions:
+## Build instructions
 
-1. Set up build environment as per Google documentation
+1. Clone the repo and fetch submodules:
 
-https://source.android.com/docs/setup/start/requirements
+```bash
+git clone https://github.com/iHagosss/android_kernel_samsung_exynos9820.git
+cd android_kernel_samsung_exynos9820
+git submodule update --init --recursive
+git checkout main
+```
 
-* The `libarchive-tools` package is also necessary to patch the toolchain.
-* The `ccache` package is necessary if you wish to build with CCache (Quicker subsequest builds)
+2. Build for the Galaxy S10+ beyond2lte with KernelSU-Next dev enabled:
 
-2. Properly clone repository with submodules (KernelSU and toolchains)
+```bash
+./build.sh -m beyond2lte -k y
+```
 
-```git clone --recurse-submodules https://github.com/Android-Artisan/android_kernel_samsung_exynos9820.git```
+3. If you need to build a recovery image instead:
 
-3. Build for your device without CCache and with KSU
+```bash
+./build.sh -m beyond2lte -r y
+```
 
-```./build.sh -m beyond1lte -k y -c n```
+4. The generated flashable zip will be written under `build/out/beyond2lte/`.
 
-3. Build for all devices with or without KSU
+5. Flash the generated zip via TWRP or Odin-compatible recovery flow.
 
-```./build_all.sh -k y```
+6. KernelSU-Next is configured via the `KernelSU-Next` submodule and the `arch/arm64/configs/ksu.config` config fragment. The repo currently tracks the `dev` branch of `KernelSU-Next/KernelSU-Next` for compatibility with the latest kernel-side implementation.
 
-4. Fetch the flashable zip of the kernel that was just compiled
+### Notes
 
-```build/out/[your_device]/ArtisanKRNL...zip```
-
-5. Flash it using a supported recovery like TWRP either using the install function or ADB Sideload
-
-6. Enjoy!
+- This repo is optimized for the Samsung Exynos 9820 family, including the `beyond2lte` model.
+- The charging and USB tuning work is device-specific and should be tested on hardware with logs from `dmesg` and `/sys/class/power_supply/*`.
+- Always keep a known-good backup kernel on your SD card or device storage before flashing a kernel with root or charge-policy changes.
 
 Linux kernel
 ============
@@ -35,13 +41,12 @@ This file was moved to Documentation/admin-guide/README.rst
 Please notice that there are several guides for kernel developers and users.
 These guides can be rendered in a number of formats, like HTML and PDF.
 
-In order to build the documentation, use ``make htmldocs`` or
-``make pdfdocs``.
+In order to build the documentation, use `make htmldocs` or `make pdfdocs`.
 
 There are various text files in the Documentation/ subdirectory,
 several of them using the Restructured Text markup notation.
 See Documentation/00-INDEX for a list of what is contained in each file.
 
 Please read the Documentation/process/changes.rst file, as it contains the
-requirements for building and running the kernel, and information about
-the problems which may result by upgrading your kernel.
+requirements for building and running the kernel, and information about the
+problems which may result by upgrading your kernel.
